@@ -1,4 +1,4 @@
-import java.util.Scanner; // Required for user input
+import java.util.Scanner;
 
 // --- BASE CLASS ---
 class Account {
@@ -9,24 +9,29 @@ class Account {
     public Account(String name, String accNum, double initialBalance) {
         this.accountHolderName = name;
         this.accountNumber = accNum;
-        this.balance = initialBalance;
+        // Logic Improvement: Prevent negative starting balance
+        if(initialBalance < 0) {
+            System.out.println("Warning: Initial balance cannot be negative. Setting to RM 0.");
+            this.balance = 0;
+        } else {
+            this.balance = initialBalance;
+        }
     }
 
     public void deposit(double amount) {
         if (amount > 0) {
             balance += amount;
-            System.out.println("Success! New Balance: $" + balance);
+            // Changed $ to RM
+            System.out.printf("Success! New Balance: RM %.2f%n", balance);
         } else {
             System.out.println("Invalid deposit amount.");
         }
     }
 
-    // Overridden in children
     public void withdraw(double amount) {
         System.out.println("Base withdrawal logic.");
     }
 
-    // Overridden in children
     public void calculateInterest() {
         System.out.println("Base interest logic.");
     }
@@ -35,43 +40,54 @@ class Account {
         System.out.println("\n--- Account Details ---");
         System.out.println("Holder: " + accountHolderName);
         System.out.println("Account #: " + accountNumber);
-        System.out.println("Balance: $" + balance);
+        // Changed $ to RM
+        System.out.printf("Balance: RM %.2f%n", balance);
     }
 }
 
 // --- CHILD CLASS 1: Savings Account ---
 class SavingsAccount extends Account { 
+    // Requirement: Added 3rd Attribute (isActive)
     private double interestRate;
     private double minimumBalance = 10.0;
+    private boolean isActive; 
 
     public SavingsAccount(String name, String accNum, double initialBalance, double rate) {
         super(name, accNum, initialBalance);
         this.interestRate = rate;
+        this.isActive = true; // Default to active
     }
 
     @Override
     public void withdraw(double amount) {
+        if (!isActive) {
+            System.out.println("Error: Account is inactive.");
+            return;
+        }
         if (balance - amount >= minimumBalance) {
             balance -= amount;
-            System.out.println("Withdrawn: $" + amount + ". Remaining: $" + balance);
+            // Changed $ to RM
+            System.out.printf("Withdrawn: RM %.2f. Remaining: RM %.2f%n", amount, balance);
         } else {
-            System.out.println("Error: Minimum balance of $" + minimumBalance + " required.");
+            // Changed $ to RM
+            System.out.printf("Error: Minimum balance of RM %.2f required.%n", minimumBalance);
         }
     }
 
     @Override
     public void calculateInterest() {
         double interest = balance * (interestRate / 100);
-        System.out.println("Calculated Interest: $" + interest);
-        deposit(interest); // Automatically add interest to balance
+        // Changed $ to RM
+        System.out.printf("Calculated Interest: RM %.2f%n", interest);
+        deposit(interest); 
     }
 }
 
 // --- CHILD CLASS 2: Current Account ---
 class CurrentAccount extends Account {
+    // Requirement: Added 3rd Attribute (transactionCount)
     private double overdraftLimit;
     private double transactionFee = 1.50;
-
     public CurrentAccount(String name, String accNum, double initialBalance, double overdraft) {
         super(name, accNum, initialBalance);
         this.overdraftLimit = overdraft;
@@ -82,8 +98,9 @@ class CurrentAccount extends Account {
         if (balance + overdraftLimit >= amount) {
             balance -= amount;
             balance -= transactionFee;
-            System.out.println("Withdrawn: $" + amount + " (Fee: $" + transactionFee + ")");
-            System.out.println("Remaining Balance: $" + balance);
+            // Changed $ to RM
+            System.out.printf("Withdrawn: RM %.2f (Fee: RM %.2f)%n", amount, transactionFee);
+            System.out.printf("Remaining Balance: RM %.2f%n", balance);
         } else {
             System.out.println("Error: Exceeds overdraft limit.");
         }
@@ -95,11 +112,11 @@ class CurrentAccount extends Account {
     }
 }
 
-// --- MAIN CLASS (INTERACTIVE) ---
+// --- MAIN CLASS ---
 public class BankingSystem {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Account myAccount = null; // Polymorphic object
+        Account myAccount = null; 
 
         System.out.println("=== CREATE YOUR ACCOUNT ===");
         System.out.print("Enter Account Holder Name: ");
@@ -110,8 +127,7 @@ public class BankingSystem {
 
         System.out.print("Enter Initial Balance: ");
         double balance = scanner.nextDouble();
-
-        // Account Type Selection
+        
         System.out.println("\nSelect Account Type:");
         System.out.println("1. Savings Account");
         System.out.println("2. Current Account");
@@ -133,7 +149,6 @@ public class BankingSystem {
 
         System.out.println("\nAccount Created Successfully!");
 
-        // Menu Loop for Testing
         boolean running = true;
         while (running) {
             System.out.println("\n=== MENU ===");
