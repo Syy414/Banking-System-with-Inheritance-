@@ -21,7 +21,6 @@ class Account {
     public void deposit(double amount) {
         if (amount > 0) {
             balance += amount;
-            // Changed $ to RM
             System.out.printf("Success! New Balance: RM %.2f%n", balance);
         } else {
             System.out.println("Invalid deposit amount.");
@@ -40,14 +39,12 @@ class Account {
         System.out.println("\n--- Account Details ---");
         System.out.println("Holder: " + accountHolderName);
         System.out.println("Account #: " + accountNumber);
-        // Changed $ to RM
         System.out.printf("Balance: RM %.2f%n", balance);
     }
 }
 
 // --- CHILD CLASS 1: Savings Account ---
 class SavingsAccount extends Account { 
-    // Requirement: Added 3rd Attribute (isActive)
     private double interestRate;
     private double minimumBalance = 10.0;
     private boolean isActive; 
@@ -66,10 +63,8 @@ class SavingsAccount extends Account {
         }
         if (balance - amount >= minimumBalance) {
             balance -= amount;
-            // Changed $ to RM
             System.out.printf("Withdrawn: RM %.2f. Remaining: RM %.2f%n", amount, balance);
         } else {
-            // Changed $ to RM
             System.out.printf("Error: Minimum balance of RM %.2f required.%n", minimumBalance);
         }
     }
@@ -77,7 +72,6 @@ class SavingsAccount extends Account {
     @Override
     public void calculateInterest() {
         double interest = balance * (interestRate / 100);
-        // Changed $ to RM
         System.out.printf("Calculated Interest: RM %.2f%n", interest);
         deposit(interest); 
     }
@@ -85,7 +79,6 @@ class SavingsAccount extends Account {
 
 // --- CHILD CLASS 2: Current Account ---
 class CurrentAccount extends Account {
-    // Requirement: Added 3rd Attribute (transactionCount)
     private double overdraftLimit;
     private double transactionFee = 1.50;
     public CurrentAccount(String name, String accNum, double initialBalance, double overdraft) {
@@ -98,7 +91,6 @@ class CurrentAccount extends Account {
         if (balance + overdraftLimit >= amount) {
             balance -= amount;
             balance -= transactionFee;
-            // Changed $ to RM
             System.out.printf("Withdrawn: RM %.2f (Fee: RM %.2f)%n", amount, transactionFee);
             System.out.printf("Remaining Balance: RM %.2f%n", balance);
         } else {
